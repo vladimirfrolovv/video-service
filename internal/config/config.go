@@ -23,7 +23,7 @@ func LoadConfig() *Config {
 		Minio: MinioConfig{
 			Endpoint:   getEnv("MINIO_ENDPOINT", "localhost:9000"),
 			AccessKey:  getEnv("MINIO_ACCESS_KEY", "admin"),
-			SecretKey:  getEnv("MINIO_SECRET_KEY", "admin"),
+			SecretKey:  getEnv("MINIO_SECRET_KEY", "adminadmin"),
 			UseSSL:     getEnv("MINIO_USE_SSL", "false") == "true",
 			BucketName: getEnv("MINIO_BUCKET_NAME", "videos"),
 		},

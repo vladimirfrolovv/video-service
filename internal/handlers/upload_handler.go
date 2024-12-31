@@ -52,6 +52,8 @@ func uploadToMinIO(ctx context.Context, client *minio.Client, bucketName string,
 		file,
 		handler.Size,
 		minio.PutObjectOptions{
+			PartSize:    10,
+			NumThreads:  4,
 			ContentType: handler.Header.Get("Content-Type"),
 		},
 	)

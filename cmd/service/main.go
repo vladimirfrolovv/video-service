@@ -28,6 +28,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/upload", handlers.UploadHandler(minioClient, cfg.Minio)).Methods("POST")
+	router.HandleFunc("/video/{filename}", handlers.GetVideoHandler(minioClient, cfg.Minio)).Methods("GET")
 	fmt.Println("Сервис запущен на порту", cfg.AppPort)
 	if err := http.ListenAndServe(cfg.AppPort, router); err != nil {
 		log.Fatal(err)

@@ -44,7 +44,6 @@ func uploadToMinIO(ctx context.Context, client *minio.Client, bucketName string,
 	if _, err := file.Seek(0, 0); err != nil {
 		return minio.UploadInfo{}, err
 	}
-
 	return client.PutObject(
 		ctx,
 		bucketName,

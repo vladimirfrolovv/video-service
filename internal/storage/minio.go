@@ -35,3 +35,21 @@ func EnsureBucket(client *minio.Client, minioCfg config.MinioConfig) error {
 	log.Printf("Бакет %s уже существует.\n", minioCfg.BucketName)
 	return nil
 }
+
+func ListObjects(client *minio.Client, bucketName string) ([]string, error) {
+	ctx := context.Background()
+
+	var files []string
+	objectCh := client.ListObjects(ctx, bucketName, minio.ListObjectsOptions{
+		Recursive: true,
+	})
+
+	for obj := range objectCh {
+		if obj.Err != nil {
+			return nil, obj.Err
+		}
+		files = append(files, obj.Key)
+	}
+
+	return files, nil
+}

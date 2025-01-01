@@ -27,10 +27,24 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+	router.Use(mux.CORSMethodMiddleware(router))
+	router.Use(simpleCORS)
 	router.HandleFunc("/upload", handlers.UploadHandler(minioClient, cfg.Minio)).Methods("POST")
 	router.HandleFunc("/video/{filename}", handlers.GetVideoHandler(minioClient, cfg.Minio)).Methods("GET")
+	router.HandleFunc("/list", handlers.ListHandler(minioClient, cfg.Minio)).Methods("GET")
 	fmt.Println("Сервис запущен на порту", cfg.AppPort)
 	if err := http.ListenAndServe(cfg.AppPort, router); err != nil {
 		log.Fatal(err)
 	}
+}
+func simpleCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }

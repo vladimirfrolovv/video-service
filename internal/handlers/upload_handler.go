@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math"
 	"mime/multipart"
 	"net/http"
 
@@ -51,10 +52,13 @@ func uploadToMinIO(ctx context.Context, client *minio.Client, bucketName string,
 		file,
 		handler.Size,
 		minio.PutObjectOptions{
-			// invalid part size
-			//PartSize:    500,
+			// 50 mb
+			PartSize:    50 * pow(1024, 2),
 			NumThreads:  4,
 			ContentType: handler.Header.Get("Content-Type"),
 		},
 	)
+}
+func pow(a, b uint64) uint64 {
+	return uint64(math.Pow(float64(a), float64(b)))
 }

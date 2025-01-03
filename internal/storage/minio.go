@@ -25,14 +25,14 @@ func EnsureBucket(client *minio.Client, minioCfg config.MinioConfig) error {
 	ctx := context.Background()
 	exists, errBucketExists := client.BucketExists(ctx, minioCfg.BucketName)
 	if errBucketExists != nil {
-		return fmt.Errorf("ошибка при проверке бакета %s: %w", minioCfg.BucketName, errBucketExists)
+		return fmt.Errorf("error bucket reading %s: %w", minioCfg.BucketName, errBucketExists)
 	}
 	if !exists {
 		if err := client.MakeBucket(ctx, minioCfg.BucketName, minio.MakeBucketOptions{}); err != nil {
-			return fmt.Errorf("не удалось создать бакет %s: %w", minioCfg.BucketName, err)
+			return fmt.Errorf("dont create bucket %s: %w", minioCfg.BucketName, err)
 		}
 	}
-	log.Printf("Бакет %s уже существует.\n", minioCfg.BucketName)
+	log.Printf("Bucket %s exist.\n", minioCfg.BucketName)
 	return nil
 }
 

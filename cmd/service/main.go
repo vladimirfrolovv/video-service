@@ -14,16 +14,16 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Println("Внимание: .env файл не найден или не может быть прочитан:", err)
+		log.Println(".env file not read", err)
 	}
 	cfg := config.LoadConfig()
 
 	minioClient, err := storage.NewMinioClient(cfg.Minio)
 	if err != nil {
-		log.Fatalf("Не удалось инициализировать MinIO клиент: %v\n", err)
+		log.Fatalf("Not initialize minio client: %v\n", err)
 	}
 	if err := storage.EnsureBucket(minioClient, cfg.Minio); err != nil {
-		log.Fatalf("Не удалось убедиться в существовании бакета: %v\n", err)
+		log.Fatalf("Dont check exists minio bucket: %v\n", err)
 	}
 
 	router := mux.NewRouter()
@@ -42,6 +42,7 @@ func simpleCORS(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		//Only options
 		if r.Method == http.MethodOptions {
 			return
 		}

@@ -17,25 +17,25 @@ func UploadHandler(minioClient *minio.Client, minioCfg config.MinioConfig) http.
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Ограничение на размер загружаемого файла — 100 МБ
 		if err := r.ParseMultipartForm(100 << 20); err != nil {
-			http.Error(w, "Ошибка при чтении multipart формы: "+err.Error(), http.StatusBadRequest)
+			http.Error(w, "Error reading multipart form "+err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		file, handler, err := r.FormFile("file")
 		if err != nil {
-			http.Error(w, "Не удалось получить файл из запроса: "+err.Error(), http.StatusBadRequest)
+			http.Error(w, "Dont get file from query: "+err.Error(), http.StatusBadRequest)
 			return
 		}
 		defer file.Close()
 
 		uploadInfo, err := uploadToMinIO(r.Context(), minioClient, minioCfg.BucketName, file, handler)
 		if err != nil {
-			log.Printf("Ошибка загрузки файла: %v\n", err)
-			http.Error(w, "Ошибка при загрузке файла в MinIO: "+err.Error(), http.StatusInternalServerError)
+			log.Printf("Error get file: %v\n", err)
+			http.Error(w, "Error upload file to minio: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		fmt.Fprintf(w, "Файл успешно загружен. ETag: %s\n", uploadInfo.ETag)
+		fmt.Fprintf(w, "File download succes: %s\n", uploadInfo.ETag)
 	}
 }
 

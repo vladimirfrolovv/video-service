@@ -17,28 +17,28 @@ func GetVideoHandler(minioClient *minio.Client, minioCfg config.MinioConfig) htt
 		vars := mux.Vars(r)
 		filename, ok := vars["filename"]
 		if !ok || filename == "" {
-			http.Error(w, "filename не указан", http.StatusBadRequest)
+			http.Error(w, "filename not exists", http.StatusBadRequest)
 			return
 		}
 
 		object, err := minioClient.GetObject(context.Background(), minioCfg.BucketName, filename, minio.GetObjectOptions{})
 		if err != nil {
-			log.Printf("Не удалось получить объект %s из MinIO: %v\n", filename, err)
-			http.Error(w, "Ошибка при получении видео", http.StatusInternalServerError)
+			log.Printf("Dont get object %s from minio: %v\n", filename, err)
+			http.Error(w, "Dont get video", http.StatusInternalServerError)
 			return
 		}
 		defer object.Close()
 
 		_, err = object.Stat()
 		if err != nil {
-			log.Printf("Не удалось выполнить Stat() для объекта %s: %v\n", filename, err)
-			http.Error(w, "Видео не найдено или ошибка чтения", http.StatusNotFound)
+			log.Printf("Not execute Stat() for object %s: %v\n", filename, err)
+			http.Error(w, "Video not exists", http.StatusNotFound)
 			return
 		}
 
 		_, err = io.Copy(w, object)
 		if err != nil {
-			log.Printf("Ошибка при копировании данных объекта %s: %v\n", filename, err)
+			log.Printf("Dont must copy object %s: %v\n", filename, err)
 		}
 	}
 }
